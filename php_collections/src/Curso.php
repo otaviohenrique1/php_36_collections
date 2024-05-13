@@ -2,26 +2,21 @@
 
 namespace Alura\Collections;
 
-// use SplDoublyLinkedList;
-use SplObjectStorage;
-use SplQueue;
-use SplStack;
+use Ds\Set;
+use Ds\Queue;
+use Ds\Stack;
 
 class Curso
 {
-  // private SplDoublyLinkedList $alteracoes;
-  private SplStack $alteracoes;
-  // private SplDoublyLinkedList $filaDeEsperaDeAlunos;
-  private SplQueue $filaDeEsperaDeAlunos;
-  // private SplDoublyLinkedList $alunosMatriculados;
-  private SplObjectStorage $alunosMatriculados;
+  private Stack $alteracoes;
+  private Queue $filaDeEsperaDeAlunos;
+  private Set $alunosMatriculados;
 
   public function __construct(public string $nome)
   {
-    // $this->alteracoes = new SplDoublyLinkedList();
-    $this->alteracoes = new SplStack();
-    $this->filaDeEsperaDeAlunos = new SplQueue();
-    $this->alunosMatriculados = new SplObjectStorage();
+    $this->alteracoes = new Stack();
+    $this->filaDeEsperaDeAlunos = new Queue();
+    $this->alunosMatriculados = new Set();
   }
 
   public function adicionaAlteracao(string $alteracao): void
@@ -29,28 +24,33 @@ class Curso
     $this->alteracoes->push($alteracao);
   }
 
-  public function recuperaAlteracoes(): SplStack
+  public function desfazAlteracao(): void
   {
-    return clone $this->alteracoes;
+    $this->alteracoes->pop();
+  }
+
+  public function recuperaAlteracoes(): Stack
+  {
+    return $this->alteracoes->copy();
   }
 
   public function adicionaAlunoParaEspera(Aluno $aluno): void
   {
-    $this->filaDeEsperaDeAlunos->enqueue($aluno);
+    $this->filaDeEsperaDeAlunos->push($aluno);
   }
 
-  public function recuperaAlunosEsperando(): SplQueue
+  public function recuperaAlunosEsperando(): Queue
   {
-    return clone $this->filaDeEsperaDeAlunos;
+    return $this->filaDeEsperaDeAlunos->copy();
   }
 
   public function matriculaAluno(Aluno $aluno): void
   {
-    $this->alunosMatriculados->attach($aluno);
+    $this->alunosMatriculados->add($aluno);
   }
 
-  public function recuperaAlunosMatriculados(): SplObjectStorage
+  public function recuperaAlunosMatriculados(): Set
   {
-    return clone $this->alunosMatriculados;
+    return $this->alunosMatriculados->copy();
   }
 }
